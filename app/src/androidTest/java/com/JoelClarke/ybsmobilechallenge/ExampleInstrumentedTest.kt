@@ -1,4 +1,4 @@
-package com.JoalClarke.ybsmobilechallenge
+package com.JoelClarke.ybsmobilechallenge
 
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.ext.junit.runners.AndroidJUnit4

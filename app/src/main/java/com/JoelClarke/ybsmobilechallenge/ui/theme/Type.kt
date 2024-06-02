@@ -1,4 +1,4 @@
-package com.JoalClarke.ybsmobilechallenge.ui.theme
+package com.JoelClarke.ybsmobilechallenge.ui.theme
 
 import androidx.compose.material3.Typography
 import androidx.compose.ui.text.TextStyle

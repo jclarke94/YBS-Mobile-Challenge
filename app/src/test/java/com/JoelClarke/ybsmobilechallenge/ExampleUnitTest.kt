@@ -1,4 +1,4 @@
-package com.JoalClarke.ybsmobilechallenge
+package com.JoelClarke.ybsmobilechallenge
 
 import org.junit.Test
 

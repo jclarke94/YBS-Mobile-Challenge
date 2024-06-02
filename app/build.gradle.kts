@@ -4,11 +4,11 @@ plugins {
 }
 
 android {
-    namespace = "com.JoalClarke.ybsmobilechallenge"
+    namespace = "com.JoelClarke.ybsmobilechallenge"
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "com.JoalClarke.ybsmobilechallenge"
+        applicationId = "com.JoelClarke.ybsmobilechallenge"
         minSdk = 28
         targetSdk = 34
         versionCode = 1
@@ -38,6 +38,7 @@ android {
     }
     buildFeatures {
         compose = true
+        viewBinding = true
     }
     composeOptions {
         kotlinCompilerExtensionVersion = "1.5.1"
@@ -51,6 +52,26 @@ android {
 
 dependencies {
 
+    // GSON - JSON parsing library
+    implementation("com.google.code.gson:gson:2.8.6")
+
+    // OKHttp - HTTP networking library
+    implementation("com.squareup.okhttp3:okhttp:4.9.0")
+
+    // Glide - Image Loading Library
+    implementation("com.github.bumptech.glide:glide:4.12.0")
+    annotationProcessor("com.github.bumptech.glide:compiler:4.12.0")
+
+    // Lifecycle - AndroidX Lifecycle libraries
+    implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.4.0")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.4.0")
+
+    // AppCompat - Backwards compatibility UI theming
+    implementation("androidx.appcompat:appcompat:1.3.1")
+    implementation("com.google.android.material:material:1.4.0")
+    implementation("androidx.constraintlayout:constraintlayout:2.1.1")
+
+    //Base Android libraries added by android studio
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
