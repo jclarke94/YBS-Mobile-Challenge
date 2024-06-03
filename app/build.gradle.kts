@@ -7,6 +7,8 @@ android {
     namespace = "com.JoelClarke.ybsmobilechallenge"
     compileSdk = 34
 
+
+
     defaultConfig {
         applicationId = "com.JoelClarke.ybsmobilechallenge"
         minSdk = 28
@@ -18,6 +20,8 @@ android {
         vectorDrawables {
             useSupportLibrary = true
         }
+
+        buildConfigField ("String", "BASE_URL", "\"https://www.example.com/\"")
     }
 
     buildTypes {
@@ -39,6 +43,7 @@ android {
     buildFeatures {
         compose = true
         viewBinding = true
+        buildConfig = true
     }
     composeOptions {
         kotlinCompilerExtensionVersion = "1.5.1"
