@@ -52,6 +52,7 @@ import kotlin.collections.ArrayList
  * response that can work with the network caching and callback features.
  *
  */
+
 class NetworkManager(context: Context) {
 
     private val TAG = "NETWORK_MANAGER";

@@ -1,6 +1,9 @@
 package com.JoelClarke.ybsmobilechallenge
 
+import android.app.Activity
 import android.os.Bundle
+import android.util.Log
+import android.view.View
 import androidx.activity.viewModels
 import androidx.lifecycle.ViewModel
 import com.JoelClarke.ybsmobilechallenge.databinding.ActivityMainBinding
@@ -27,9 +30,18 @@ class MainActivity : NavigableActivity() {
     }
 
     private fun navigateToStartingFragment() {
+        Log.d("MAIN_ACTIVITY", "navigate to start")
         Navigator.with(this)
             .fragment(HomeFragment())
             .navigate()
+    }
+
+    fun showBlocker() {
+        bindings.clBlocker.visibility = View.VISIBLE
+    }
+
+    fun hideBlocker() {
+        bindings.clBlocker.visibility = View.GONE
     }
 
     class MainActivityViewModel : ViewModel() {

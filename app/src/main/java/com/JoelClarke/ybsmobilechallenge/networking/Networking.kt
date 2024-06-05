@@ -6,7 +6,10 @@ import android.net.Uri
 import android.os.Handler
 import androidx.collection.ArrayMap
 import com.JoelClarke.ybsmobilechallenge.BuildConfig
+import com.JoelClarke.ybsmobilechallenge.networking.responses.BaseResponse
+import com.JoelClarke.ybsmobilechallenge.networking.responses.PhotosResponse
 import com.JoelClarke.ybsmobilechallenge.util.ACTION_STATUS_CODE
+import com.JoelClarke.ybsmobilechallenge.util.EndpointsUtil
 import com.google.gson.Gson
 import okhttp3.*
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
@@ -23,14 +26,11 @@ import kotlin.reflect.KClass
  *  Features a collection of helpful boilerplate that will get you communicating with the internet
  *  in no time at all.
  *
- *  Common components such as a BaseResponse which encapsulates common response structure that
- *  Exploding Phone APIs provide are included.
  *
  */
 class Networking(private val context : Context) {
 
-//    private val BASE_URL = BuildConfig.BASE_URL
-private val BASE_URL = "https://www.google.com/"
+    private val BASE_URL = BuildConfig.BASE_URL
 
     private val okHttpClient : OkHttpClient = OkHttpClient.Builder().callTimeout(30, TimeUnit.SECONDS).readTimeout(30, TimeUnit.SECONDS).build()
     private val gson = Gson()
@@ -55,6 +55,43 @@ private val BASE_URL = "https://www.google.com/"
      */
     fun getGoogle() : Response? {
         return performNetworking("https://www.google.com/", null)
+    }
+
+    /**
+     * test connection to the api to get photos
+     */
+    fun testPhotos() : PhotosResponse? {
+
+        var uri = Uri.Builder()
+            .scheme("https")
+            .authority(BASE_URL)
+            .appendPath("services")
+            .appendPath("rest/")
+            .appendQueryParameter("method", EndpointsUtil.GET_RECENT)
+            .appendQueryParameter("api_key", BuildConfig.API_KEY)
+            .appendQueryParameter("extras", "url_l")
+            .appendQueryParameter("format", "json")
+            .build()
+
+
+        return performBasicNetworking(uri.toString(), null, PhotosResponse::class)
+    }
+
+    fun getRecent() : PhotosResponse? {
+
+        var uri = Uri.Builder()
+            .scheme("https")
+            .authority(BASE_URL)
+            .appendPath("services")
+            .appendPath("rest/")
+            .appendQueryParameter("method", EndpointsUtil.GET_RECENT)
+            .appendQueryParameter("api_key", BuildConfig.API_KEY)
+            .appendQueryParameter("extras", "url_l")
+            .appendQueryParameter("format", "json")
+            .build()
+
+
+        return performBasicNetworking(uri.toString(), null, PhotosResponse::class)
     }
 
     // ------------------------------
@@ -125,13 +162,16 @@ private val BASE_URL = "https://www.google.com/"
         }
 
         // If we have an Authentication Token, pass it with the request
-        if (isMainUrl && this.authenticationToken != null) {
-            builder.addHeader("Authorization", "Bearer " + this.authenticationToken)
-        }
+//        if (isMainUrl && this.authenticationToken != null) {
+//            builder.addHeader("Authorization", "Bearer " + this.authenticationToken)
+//        }
 
         if (cookies != null) {
             builder.addHeader("Cookie", cookies)
         }
+
+
+
 
         try {
             val request = builder.build()

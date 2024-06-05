@@ -1,4 +1,4 @@
-package com.JoelClarke.ybsmobilechallenge.networking
+package com.JoelClarke.ybsmobilechallenge.networking.responses
 
 import com.google.gson.annotations.SerializedName
 

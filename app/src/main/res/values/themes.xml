@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
 
-    <style name="Theme.YBSMobileChallenge" parent="android:Theme.Material.Light.NoActionBar" />
+    <style name="Theme.YBSMobileChallenge" parent="Theme.MaterialComponents.Light.NoActionBar">
+        <!-- Status bar color. -->
+        <item name="android:statusBarColor" tools:targetApi="l">@color/white</item>
+        <item name="android:textColor">@color/black</item>
+        <item name="android:forceDarkAllowed">false</item>
+    </style>
 </resources>

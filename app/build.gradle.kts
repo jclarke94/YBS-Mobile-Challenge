@@ -7,11 +7,17 @@ android {
     namespace = "com.JoelClarke.ybsmobilechallenge"
     compileSdk = 34
 
-
+//    Key:
+//    96cb87ce6fc6d62d09132a43c57aa260
+//    2031da3bf4707025a78a622673942ef3
+//
+//            Secret:
+//    795487c27c3f5793
+//    c83ea6a858d3638e
 
     defaultConfig {
         applicationId = "com.JoelClarke.ybsmobilechallenge"
-        minSdk = 28
+        minSdk = 29
         targetSdk = 34
         versionCode = 1
         versionName = "1.0"
@@ -21,7 +27,9 @@ android {
             useSupportLibrary = true
         }
 
-        buildConfigField ("String", "BASE_URL", "\"https://www.example.com/\"")
+        buildConfigField ("String", "BASE_URL", "\"www.flickr.com\"")
+        buildConfigField("String", "API_KEY", "\"96cb87ce6fc6d62d09132a43c57aa260\"")
+        buildConfigField("String", "API_SECRET", "\"795487c27c3f5793\"")
     }
 
     buildTypes {
@@ -75,6 +83,12 @@ dependencies {
     implementation("androidx.appcompat:appcompat:1.3.1")
     implementation("com.google.android.material:material:1.4.0")
     implementation("androidx.constraintlayout:constraintlayout:2.1.1")
+
+    // Core - Various Core libraries for Kotlin
+    implementation("org.jetbrains.kotlin:kotlin-stdlib:1.8.0")
+    implementation("androidx.core:core-ktx:1.9.0")
+    implementation("androidx.activity:activity-ktx:1.6.1")
+    implementation("androidx.fragment:fragment-ktx:1.5.5")
 
     //Base Android libraries added by android studio
     implementation(libs.androidx.core.ktx)
