@@ -86,8 +86,9 @@ class Networking(private val context : Context) {
             .appendPath("rest/")
             .appendQueryParameter("method", EndpointsUtil.GET_RECENT)
             .appendQueryParameter("api_key", BuildConfig.API_KEY)
-            .appendQueryParameter("extras", "url_l")
+            .appendQueryParameter("extras", "url_l,owner_name,tags")
             .appendQueryParameter("format", "json")
+            .appendQueryParameter("nojsoncallback", "1")
             .build()
 
 
@@ -124,7 +125,7 @@ class Networking(private val context : Context) {
         try {
             val requestCall = performNetworking(url, body)
             val out = gson.fromJson(requestCall?.body?.string(), outClass.java)
-            out.responseCode = requestCall?.code ?: HttpURLConnection.HTTP_OK
+            out.code = requestCall?.code ?: HttpURLConnection.HTTP_OK
             return out
         } catch (exception : Exception) {
             exception.printStackTrace()

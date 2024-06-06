@@ -1,9 +1,11 @@
 package com.JoelClarke.ybsmobilechallenge.networking.entity
 
 class Photo(
-    id : String,
-    owner : String,
-    title : String,
-    url_l : String
+    val id : String,
+    val owner : String,
+    val title : String,
+    val url_l : String,
+    val ownerName : String,
+    val tags : String?
 ) {
 }

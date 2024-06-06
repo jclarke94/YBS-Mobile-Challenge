@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- Standard Touch Area sizes -->
+    <dimen name="sml_touch_area">32dp</dimen>
+    <dimen name="min_touch_area">48dp</dimen>
+    <dimen name="med_touch_area">52dp</dimen>
+    <dimen name="lrg_touch_area">64dp</dimen>
+    <dimen name="xlrg_touch_area">72dp</dimen>
+    <dimen name="xxlrg_touch_area">96dp</dimen>
+
+    <!-- Padding sizes -->
+    <dimen name="padding_xsmall">2dp</dimen>
+    <dimen name="padding_small">4dp</dimen>
+    <dimen name="padding_medium">8dp</dimen>
+    <dimen name="padding_semimedium">12dp</dimen>
+    <dimen name="padding_large">16dp</dimen> <!-- Should be the min distance from edges for text -->
+    <dimen name="padding_xlarge">24dp</dimen>
+    <dimen name="padding_xxlarge">32dp</dimen>
+    <dimen name="padding_site_issues_top_bottom">16dp</dimen>
+
+    <!-- Text Sizes -->
+    <dimen name="heading_medium">24sp</dimen>
+    <dimen name="heading_large">28sp</dimen>
+    <dimen name="heading_xlarge">40sp</dimen>
+
+    <dimen name="text_fineprint">10sp</dimen>
+    <dimen name="text_caption">12sp</dimen>
+    <dimen name="text_body">14sp</dimen>
+    <dimen name="text_subheading">16sp</dimen>
+    <dimen name="text_kinda_title">18sp</dimen>
+    <dimen name="text_title">20sp</dimen>
+    <dimen name="text_headline">24sp</dimen>
+    <dimen name="text_display_small">28sp</dimen>
+    <dimen name="text_display_normal">34sp</dimen>
+    <dimen name="text_display_large">45sp</dimen>
+    <dimen name="text_display_xlarge">56sp</dimen>
+    <dimen name="text_display_xxlarge">112sp</dimen>
+
+    <dimen name="toolbar_height">@dimen/med_touch_area</dimen>
+
+    <dimen name="dialog_min_width">300dp</dimen>
+</resources>

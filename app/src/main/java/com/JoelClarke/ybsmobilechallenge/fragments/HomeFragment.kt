@@ -9,11 +9,17 @@ import androidx.fragment.app.viewModels
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView.LayoutManager
 import com.JoelClarke.ybsmobilechallenge.MainActivity
 import com.JoelClarke.ybsmobilechallenge.databinding.FragmentHomeBinding
 import com.JoelClarke.ybsmobilechallenge.networking.NetworkManager
 import com.JoelClarke.ybsmobilechallenge.networking.Networking
 import com.JoelClarke.ybsmobilechallenge.networking.responses.PhotosResponse
+import com.JoelClarke.ybsmobilechallenge.util.ListItem
+import com.JoelClarke.ybsmobilechallenge.util.ListUtil
+import com.bumptech.glide.Glide
 import okhttp3.Response
 
 class HomeFragment: Fragment() {
@@ -29,6 +35,8 @@ class HomeFragment: Fragment() {
     private val homeViewModel : HomeViewModel by viewModels()
 
     private lateinit var bindings : FragmentHomeBinding
+    private lateinit var layoutManager: LayoutManager
+    private lateinit var adapter : PhotoListAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -40,7 +48,10 @@ class HomeFragment: Fragment() {
         bindings = FragmentHomeBinding.inflate(inflater)
         val v = bindings.root
 
-
+        layoutManager = LinearLayoutManager(requireContext())
+        adapter = PhotoListAdapter()
+        bindings.rvItems.adapter = adapter
+        bindings.rvItems.layoutManager = layoutManager
 
         setupObservers()
         getPhotos()
@@ -87,7 +98,7 @@ class HomeFragment: Fragment() {
         }
     }
 
-    fun setupObservers() {
+    private fun setupObservers() {
         homeViewModel.networkInFlight.removeObservers(viewLifecycleOwner)
         homeViewModel.networkInFlight.observe(viewLifecycleOwner) {
             if (it) {
@@ -98,19 +109,25 @@ class HomeFragment: Fragment() {
         }
 
         homeViewModel.photosResponse.removeObservers(viewLifecycleOwner)
-        homeViewModel.photosResponse.observe(viewLifecycleOwner) {
-            if (it != null) {
-                //todo
-
+        homeViewModel.photosResponse.observe(viewLifecycleOwner) { response ->
+            response?.let {
+                processPhotosResponse(it)
             }
         }
     }
 
-    fun processPhotosResponse() {
+    private fun processPhotosResponse(response : PhotosResponse) {
+        homeViewModel.items.add(ListUtil.SpacerItem())
+        homeViewModel.items.add(ListUtil.SpacerItem())
+        response.photos?.photo?.let {
+            for (photo in it) {
+                homeViewModel.items.add(ListUtil.PhotosItem(photo))
+            }
+        }
 
     }
 
-    fun getPhotos() {
+    private fun getPhotos() {
         Log.d(TAG, "getPhotos")
         NetworkManager.getInstance()?.enqueue(
             NetworkManager.NetworkRequest(
@@ -123,7 +140,60 @@ class HomeFragment: Fragment() {
         }))
     }
 
+    inner class PhotoListAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+            when (viewType) {
+                ListUtil.TYPE_PHOTO -> {
+                    return ListUtil.createPhotosViewHolder(layoutInflater, parent)
+                }
+                ListUtil.TYPE_DIVIDER -> {
+                    return ListUtil.createDividerViewHolder(layoutInflater, parent)
+                }
+                ListUtil.TYPE_LOADING -> {
+                    return ListUtil.createLoadingViewHolder(layoutInflater, parent)
+                }
+                ListUtil.TYPE_SPACER -> {
+                    return ListUtil.createSpacerViewHolder(layoutInflater, parent)
+                }
+            }
+
+            return ListUtil.DummyViewHolder(View(requireContext()))
+        }
+
+        override fun getItemCount(): Int {
+            return homeViewModel.items.size
+        }
+
+        override fun getItemViewType(position: Int): Int {
+            super.getItemViewType(position)
+            return homeViewModel.items[position].getListItemType()
+        }
+
+        override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+            when (holder.itemViewType) {
+                ListUtil.TYPE_PHOTO -> {
+                    val item = homeViewModel.items[position] as ListUtil.PhotosItem
+                    val pHolder = holder as ListUtil.PhotosViewHolder
+
+                    Glide.with(requireContext())
+                        .load(item.photo.url_l)
+                        .into(pHolder.binding.ivPhoto)
+
+                    item.photo.tags?.let {
+                        pHolder.binding.tvTags.text = it
+                    }
+
+                    item.photo.owner?.let {
+                        pHolder.binding.tvUserId.text = it
+                    }
+                }
+            }
+        }
+    }
+
     class HomeViewModel : ViewModel() {
+        val items = mutableListOf<ListItem>()
+
         val networkInFlight = MutableLiveData<Boolean>()
         var photosResponse = MutableLiveData<PhotosResponse>()
     }
