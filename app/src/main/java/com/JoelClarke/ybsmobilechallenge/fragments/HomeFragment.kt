@@ -2,9 +2,14 @@ package com.JoelClarke.ybsmobilechallenge.fragments
 
 import android.os.Bundle
 import android.util.Log
+import android.view.KeyEvent
 import android.view.LayoutInflater
+import android.view.RoundedCorner
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.EditorInfo
+import android.widget.TextView
+import android.widget.TextView.OnEditorActionListener
 import androidx.fragment.app.viewModels
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.MutableLiveData
@@ -17,9 +22,14 @@ import com.JoelClarke.ybsmobilechallenge.databinding.FragmentHomeBinding
 import com.JoelClarke.ybsmobilechallenge.networking.NetworkManager
 import com.JoelClarke.ybsmobilechallenge.networking.Networking
 import com.JoelClarke.ybsmobilechallenge.networking.responses.PhotosResponse
+import com.JoelClarke.ybsmobilechallenge.util.BuddyConUtil
 import com.JoelClarke.ybsmobilechallenge.util.ListItem
 import com.JoelClarke.ybsmobilechallenge.util.ListUtil
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.bumptech.glide.load.resource.bitmap.CenterCrop
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners
+import com.bumptech.glide.request.RequestOptions
 import okhttp3.Response
 
 class HomeFragment: Fragment() {
@@ -28,6 +38,7 @@ class HomeFragment: Fragment() {
         const val TAG = "_homeFragmentTag"
 
         const val NET_GET_PHOTOS = "_getRecentPhotosNetTag"
+        const val NET_GET_SEARCH = "_getSearchPhotosNetTag"
     }
 
     private var networkingListener: NetworkManager.NetworkRequestListener<Any>? = null
@@ -53,8 +64,35 @@ class HomeFragment: Fragment() {
         bindings.rvItems.adapter = adapter
         bindings.rvItems.layoutManager = layoutManager
 
+        bindings.etSearch.setOnEditorActionListener(object : OnEditorActionListener {
+            override fun onEditorAction(p0: TextView?, actionId: Int, event: KeyEvent?): Boolean {
+                if (actionId == EditorInfo.IME_ACTION_SEARCH
+                    || actionId == EditorInfo.IME_ACTION_DONE
+                    || event?.getAction() == KeyEvent.ACTION_DOWN
+                    && event?.getKeyCode() == KeyEvent.KEYCODE_ENTER) {
+                    (activity as MainActivity).hideKeyboard()
+                    performSearch()
+                    return true
+                }
+                return false
+            }
+
+        })
+
+        bindings.etSearch.imeOptions = EditorInfo.IME_ACTION_SEARCH
+
+        bindings.ibShowSearch.setOnClickListener {
+            (activity as MainActivity).hideKeyboard()
+            performSearch()
+        }
+
+        if (homeViewModel.firstRun) {
+            homeViewModel.firstRun = false
+            bindings.etSearch.setText("Yorkshire")
+        }
+
         setupObservers()
-        getPhotos()
+        performSearch()
 
         return v
     }
@@ -68,6 +106,9 @@ class HomeFragment: Fragment() {
                     NET_GET_PHOTOS -> {
                         homeViewModel.photosResponse.value = request.response as PhotosResponse?
                     }
+                    NET_GET_SEARCH -> {
+                        homeViewModel.photosResponse.value = request.response as PhotosResponse?
+                    }
                 }
 
                 // Make sure you finish a request so that it can be cleared from cache
@@ -76,13 +117,20 @@ class HomeFragment: Fragment() {
         }
 
         NetworkManager.getInstance()?.addListener(arrayOf(
-
+            NET_GET_PHOTOS,
+            NET_GET_SEARCH
         ), networkingListener!!)
 
         val lastPhotosResponse = NetworkManager.getInstance()?.getLatest(NET_GET_PHOTOS)
         if (lastPhotosResponse != null) {
             homeViewModel.photosResponse.value = lastPhotosResponse.response as PhotosResponse?
             NetworkManager.getInstance()?.finish(lastPhotosResponse)
+        }
+
+        val lastSearchResponse = NetworkManager.getInstance()?.getLatest(NET_GET_SEARCH)
+        if (lastSearchResponse != null) {
+            homeViewModel.photosResponse.value = lastSearchResponse.response as PhotosResponse?
+            NetworkManager.getInstance()?.finish(lastSearchResponse)
         }
     }
 
@@ -92,10 +140,21 @@ class HomeFragment: Fragment() {
         networkingListener?.let {
             NetworkManager.getInstance()?.removeListener(
                 arrayOf(
-                    NET_GET_PHOTOS
+                    NET_GET_PHOTOS,
+                    NET_GET_SEARCH
                 ), it
             )
         }
+    }
+
+    private fun performSearch() {
+        var search = bindings.etSearch.text
+        if (search.isNullOrEmpty()) {
+            getPhotos()
+        } else {
+            getSearch(search.toString())
+        }
+
     }
 
     private fun setupObservers() {
@@ -110,25 +169,52 @@ class HomeFragment: Fragment() {
 
         homeViewModel.photosResponse.removeObservers(viewLifecycleOwner)
         homeViewModel.photosResponse.observe(viewLifecycleOwner) { response ->
-            response?.let {
-                processPhotosResponse(it)
+            Log.d(TAG, "Photos response")
+            homeViewModel.networkInFlight.postValue(false)
+
+            if (response != null) {
+                processPhotosResponse(response!!)
+            } else  {
+                (activity as MainActivity).showError("Something went wrong and photos could not be returned from Flickr")
             }
         }
     }
 
     private fun processPhotosResponse(response : PhotosResponse) {
-        homeViewModel.items.add(ListUtil.SpacerItem())
-        homeViewModel.items.add(ListUtil.SpacerItem())
-        response.photos?.photo?.let {
-            for (photo in it) {
-                homeViewModel.items.add(ListUtil.PhotosItem(photo))
+        if (response.photos?.page == 1) {
+            homeViewModel.items.clear()
+
+            homeViewModel.items.add(ListUtil.SpacerItem())
+            homeViewModel.items.add(ListUtil.SpacerItem())
+            response.photos?.photo?.let {
+                for (photo in it) {
+                    homeViewModel.items.add(ListUtil.PhotosItem(photo))
+                    homeViewModel.items.add(ListUtil.SpacerItem())
+                    homeViewModel.items.add(ListUtil.DividerItem())
+                    homeViewModel.items.add(ListUtil.SpacerItem())
+                }
             }
+
+            homeViewModel.items.add(ListUtil.SpacerItem())
+            homeViewModel.items.add(ListUtil.SpacerItem())
+            homeViewModel.items.add(ListUtil.SpacerItem())
+
+            adapter.notifyDataSetChanged()
+        } else {
+            //todo multiple paging
+            Log.d(TAG, "PAGE = ${response.photos?.page}")
+            homeViewModel.items.add(homeViewModel.items.size - 3, ListUtil.LoadingItem())
+            adapter.notifyItemInserted(homeViewModel.items.size - 3)
         }
 
     }
 
     private fun getPhotos() {
         Log.d(TAG, "getPhotos")
+        if (homeViewModel.networkInFlight.value == true) return
+        homeViewModel.networkInFlight.postValue(true)
+
+
         NetworkManager.getInstance()?.enqueue(
             NetworkManager.NetworkRequest(
                 NET_GET_PHOTOS,
@@ -138,6 +224,22 @@ class HomeFragment: Fragment() {
                 return Networking.getInstance()?.getRecent()
             }
         }))
+    }
+
+    private fun getSearch(searchTerm : String) {
+        if (homeViewModel.networkInFlight.value == true) return
+        homeViewModel.networkInFlight.postValue(true)
+
+
+        NetworkManager.getInstance()?.enqueue(
+            NetworkManager.NetworkRequest(
+                NET_GET_SEARCH,
+                object : NetworkManager.NetworkRunnable<Any?>() {
+                    override fun run(networkManager: NetworkManager, id: String): Any? {
+
+                        return Networking.getInstance()?.fetchSearchResults(searchTerm)
+                    }
+                }))
     }
 
     inner class PhotoListAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
@@ -177,7 +279,26 @@ class HomeFragment: Fragment() {
 
                     Glide.with(requireContext())
                         .load(item.photo.url_l)
+                        .apply(RequestOptions().transform(CenterCrop(), RoundedCorners(20)))
+                        .diskCacheStrategy(DiskCacheStrategy.ALL)
                         .into(pHolder.binding.ivPhoto)
+
+                    var buddyURL = BuddyConUtil.getBuddyConURL(
+                        item.photo.iconFarm,
+                        item.photo.iconServer,
+                        item.photo.owner,
+                        requireContext())
+
+                    Log.d(TAG, "buddyURL: $buddyURL")
+
+                    Glide.with(requireContext())
+                        .load(BuddyConUtil.getBuddyConURL(
+                            item.photo.iconFarm,
+                            item.photo.iconServer,
+                            item.photo.owner,
+                            requireContext()
+                        )).diskCacheStrategy(DiskCacheStrategy.ALL)
+                        .into(pHolder.binding.ivUserIcon)
 
                     item.photo.tags?.let {
                         pHolder.binding.tvTags.text = it
@@ -196,6 +317,7 @@ class HomeFragment: Fragment() {
 
         val networkInFlight = MutableLiveData<Boolean>()
         var photosResponse = MutableLiveData<PhotosResponse>()
+        var firstRun = true
     }
 }
 

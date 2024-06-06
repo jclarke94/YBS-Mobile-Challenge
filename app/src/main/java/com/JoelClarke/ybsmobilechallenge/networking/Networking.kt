@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Handler
+import android.util.Log
 import androidx.collection.ArrayMap
 import com.JoelClarke.ybsmobilechallenge.BuildConfig
 import com.JoelClarke.ybsmobilechallenge.networking.responses.BaseResponse
@@ -86,7 +87,29 @@ class Networking(private val context : Context) {
             .appendPath("rest/")
             .appendQueryParameter("method", EndpointsUtil.GET_RECENT)
             .appendQueryParameter("api_key", BuildConfig.API_KEY)
-            .appendQueryParameter("extras", "url_l,owner_name,tags")
+            .appendQueryParameter("safe_search", "1")
+            .appendQueryParameter("extras", "url_l,owner_name,tags,icon_server")
+            .appendQueryParameter("format", "json")
+            .appendQueryParameter("nojsoncallback", "1")
+            .build()
+
+
+        return performBasicNetworking(uri.toString(), null, PhotosResponse::class)
+    }
+
+    fun fetchSearchResults(
+        searchTerm : String
+    ) : PhotosResponse? {
+        var uri = Uri.Builder()
+            .scheme("https")
+            .authority(BASE_URL)
+            .appendPath("services")
+            .appendPath("rest/")
+            .appendQueryParameter("method", EndpointsUtil.GET_SEARCH)
+            .appendQueryParameter("api_key", BuildConfig.API_KEY)
+            .appendQueryParameter("text", searchTerm)
+            .appendQueryParameter("safe_search", "1")
+            .appendQueryParameter("extras", "url_l,owner_name,tags,icon_server")
             .appendQueryParameter("format", "json")
             .appendQueryParameter("nojsoncallback", "1")
             .build()
@@ -170,9 +193,7 @@ class Networking(private val context : Context) {
         if (cookies != null) {
             builder.addHeader("Cookie", cookies)
         }
-
-
-
+        Log.d("NETWORKING", "Performing networking for call url: $url")
 
         try {
             val request = builder.build()
