@@ -35,7 +35,7 @@
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/tvUserIdTitle"
-        android:text="@string/photo_user_id_title"
+        android:text="@string/home_user_id_title"
         android:textStyle="bold"
         android:textSize="@dimen/text_subheading"
         android:layout_margin="@dimen/padding_medium"
@@ -62,7 +62,7 @@
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/tvTagsTitle"
-        android:text="@string/photo_tags"
+        android:text="@string/home_tags"
         android:textStyle="bold"
         android:textSize="@dimen/text_subheading"
         android:layout_margin="@dimen/padding_medium"

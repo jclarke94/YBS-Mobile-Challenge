@@ -9,7 +9,10 @@ import com.JoelClarke.ybsmobilechallenge.databinding.ListitemDividerBinding
 import com.JoelClarke.ybsmobilechallenge.databinding.ListitemLoadingBinding
 import com.JoelClarke.ybsmobilechallenge.databinding.ListitemPhotoItemBinding
 import com.JoelClarke.ybsmobilechallenge.databinding.ListitemSpacerBinding
+import com.JoelClarke.ybsmobilechallenge.databinding.ListitemTagBinding
+import com.JoelClarke.ybsmobilechallenge.databinding.ListitemUserPhotoBinding
 import com.JoelClarke.ybsmobilechallenge.networking.entity.Photo
+import com.JoelClarke.ybsmobilechallenge.networking.entity.PhotoTag
 
 class ListUtil {
 
@@ -22,6 +25,8 @@ class ListUtil {
         const val TYPE_DIVIDER = 998
         const val TYPE_LOADING = 997
         const val TYPE_PHOTO = 996
+        const val TYPE_TAG = 995
+        const val TYPE_USER_PHOTO = 994
 
         fun createSpacerViewHolder(
             inflater : LayoutInflater,
@@ -53,6 +58,22 @@ class ListUtil {
         ) : PhotosViewHolder {
             val v = inflater.inflate(R.layout.listitem_photo_item, parent, false)
             return PhotosViewHolder(v)
+        }
+
+        fun createTagViewHolder(
+            inflater: LayoutInflater,
+            parent: ViewGroup
+        ) : TagViewHolder {
+            val v = inflater.inflate(R.layout.listitem_tag, parent, false)
+            return TagViewHolder(v)
+        }
+
+        fun createUserPhotoViewHolder(
+            inflater: LayoutInflater,
+            parent: ViewGroup
+        ) : UserPhotoViewHolder {
+            val v = inflater.inflate(R.layout.listitem_user_photo, parent, false)
+            return UserPhotoViewHolder(v)
         }
     }
 
@@ -86,6 +107,22 @@ class ListUtil {
         }
     }
 
+    class TagItem(
+        tag : PhotoTag.PhotoTagDetails
+    ) : ListItem {
+        override fun getListItemType(): Int {
+            return TYPE_TAG
+        }
+    }
+
+    class UserPhotoItem(
+        url : String
+    ) : ListItem {
+        override fun getListItemType(): Int {
+            return TYPE_USER_PHOTO
+        }
+    }
+
     /**
      * This section will contain all the view holders for the different items we use
      */
@@ -105,5 +142,13 @@ class ListUtil {
 
     class PhotosViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val binding = ListitemPhotoItemBinding.bind(itemView)
+    }
+
+    class TagViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        val binding = ListitemTagBinding.bind(itemView)
+    }
+
+    class UserPhotoViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        val binding = ListitemUserPhotoBinding.bind(itemView)
     }
 }

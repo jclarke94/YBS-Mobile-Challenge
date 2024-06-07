@@ -18,6 +18,7 @@ class MainActivity : NavigableActivity() {
     private lateinit var bindings : ActivityMainBinding
 
     private val mainActivityViewModel : MainActivityViewModel by viewModels()
+    private var onBackPressedListeners : MutableList<OnBackPressedListener> = mutableListOf()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -55,6 +56,54 @@ class MainActivity : NavigableActivity() {
 
     }
 
+    /**
+     *  This section contains all the controls for the back press handling in the activity
+     */
+    override fun onBackPressed() {
+        // Call listeners first otherwise bad things can happen with order-of-operations.
+        for (i in onBackPressedListeners.indices.reversed()) {
+            try {
+                onBackPressedListeners[i].onBackPressed()
+            } catch (e: Exception) {
+                e.printStackTrace()
+                Log.e(
+                    "MAIN-ACTIVITY",
+                    "Exception when calling onBackPressedListener. This may be the result of not cleaning up onBackPressedListeners."
+                )
+                onBackPressedListeners.removeAt(i)
+            }
+        }
+        if (mainActivityViewModel.allowBackPress) {
+            super.onBackPressed()
+        }
+    }
+
+    fun onBackPressed(override: Boolean) {
+        if (override) {
+            super.onBackPressed()
+        } else {
+            onBackPressed()
+        }
+    }
+
+    fun setAllowBackPress(allowBackPress: Boolean) {
+        mainActivityViewModel.allowBackPress = allowBackPress
+    }
+
+    fun addOnBackPressedListener(onBackPressedListener: OnBackPressedListener) {
+        if (!onBackPressedListeners.contains(onBackPressedListener)) {
+            onBackPressedListeners.add(onBackPressedListener)
+        }
+    }
+
+    fun removeOnBackPressedListener(onBackPressedListener: OnBackPressedListener) {
+        onBackPressedListeners.remove(onBackPressedListener)
+    }
+
+    abstract class OnBackPressedListener {
+        abstract fun onBackPressed()
+    }
+
     fun showError(message : String) {
         AlertDialog.Builder(this)
             .setTitle("Error")
@@ -66,5 +115,6 @@ class MainActivity : NavigableActivity() {
 
     class MainActivityViewModel : ViewModel() {
         var firstRun = true
+        var allowBackPress = true
     }
 }

@@ -1,10 +1,19 @@
 <resources>
     <string name="app_name">YBS Mobile Challenge</string>
+
+<!--    misc strings -->
+    <string name="buddy_url">https://farm%1$d.staticflickr.com/%2$s/buddyicons/%3$s.jpg</string>
     
 <!--    Home Fragment Strings -->
-    <string name="photo_user_id_title">User ID: </string>
-    <string name="photo_tags">Tags:</string>
-    <string name="search_term">Search\nkeyword:</string>
+    <string name="home_user_id_title">User ID: </string>
+    <string name="home_tags">Tags:</string>
+    <string name="home_search_term">Search\nkeyword:</string>
 
-    <string name="buddy_url">https://farm%1$d.staticflickr.com/%2$s/buddyicons/%3$s.jpg</string>
+<!--    Photo details page-->
+    <string name="photo_description">Description</string>
+    <string name="photo_date_taken">Date Taken</string>
+    <string name="photo_tags">Tags</string>
+    <string name="photo_owner_name">Owner Name</string>
+
+
 </resources>

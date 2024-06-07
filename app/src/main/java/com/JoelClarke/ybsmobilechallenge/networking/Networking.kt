@@ -8,6 +8,7 @@ import android.util.Log
 import androidx.collection.ArrayMap
 import com.JoelClarke.ybsmobilechallenge.BuildConfig
 import com.JoelClarke.ybsmobilechallenge.networking.responses.BaseResponse
+import com.JoelClarke.ybsmobilechallenge.networking.responses.PhotoDetailsResponse
 import com.JoelClarke.ybsmobilechallenge.networking.responses.PhotosResponse
 import com.JoelClarke.ybsmobilechallenge.util.ACTION_STATUS_CODE
 import com.JoelClarke.ybsmobilechallenge.util.EndpointsUtil
@@ -116,6 +117,24 @@ class Networking(private val context : Context) {
 
 
         return performBasicNetworking(uri.toString(), null, PhotosResponse::class)
+    }
+
+    fun fetchPhotoDetails(
+        photoId : String
+    ) : PhotoDetailsResponse? {
+        var uri = Uri.Builder()
+            .scheme("https")
+            .authority(BASE_URL)
+            .appendPath("services")
+            .appendPath("rest/")
+            .appendQueryParameter("method", EndpointsUtil.GET_INFO)
+            .appendQueryParameter("api_key", BuildConfig.API_KEY)
+            .appendQueryParameter("photo_id", photoId)
+            .appendQueryParameter("format", "json")
+            .appendQueryParameter("nojsoncallback", "1")
+            .build()
+
+        return performBasicNetworking(uri.toString(), null, PhotoDetailsResponse::class)
     }
 
     // ------------------------------

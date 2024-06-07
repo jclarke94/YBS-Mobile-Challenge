@@ -19,10 +19,12 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.LayoutManager
 import com.JoelClarke.ybsmobilechallenge.MainActivity
 import com.JoelClarke.ybsmobilechallenge.databinding.FragmentHomeBinding
+import com.JoelClarke.ybsmobilechallenge.navigator.Navigator
 import com.JoelClarke.ybsmobilechallenge.networking.NetworkManager
 import com.JoelClarke.ybsmobilechallenge.networking.Networking
 import com.JoelClarke.ybsmobilechallenge.networking.responses.PhotosResponse
 import com.JoelClarke.ybsmobilechallenge.util.BuddyConUtil
+import com.JoelClarke.ybsmobilechallenge.util.EndpointsUtil
 import com.JoelClarke.ybsmobilechallenge.util.ListItem
 import com.JoelClarke.ybsmobilechallenge.util.ListUtil
 import com.bumptech.glide.Glide
@@ -86,13 +88,15 @@ class HomeFragment: Fragment() {
             performSearch()
         }
 
+        setupObservers()
+
         if (homeViewModel.firstRun) {
             homeViewModel.firstRun = false
             bindings.etSearch.setText("Yorkshire")
+            performSearch()
         }
 
-        setupObservers()
-        performSearch()
+//        performSearch()
 
         return v
     }
@@ -172,7 +176,7 @@ class HomeFragment: Fragment() {
             Log.d(TAG, "Photos response")
             homeViewModel.networkInFlight.postValue(false)
 
-            if (response != null) {
+            if (response != null && response.stat == EndpointsUtil.STAT_OK) {
                 processPhotosResponse(response!!)
             } else  {
                 (activity as MainActivity).showError("Something went wrong and photos could not be returned from Flickr")
@@ -306,6 +310,17 @@ class HomeFragment: Fragment() {
 
                     item.photo.owner?.let {
                         pHolder.binding.tvUserId.text = it
+                    }
+
+                    pHolder.binding.ivPhoto.setOnClickListener {
+                        Navigator.with((activity as MainActivity))
+                            .backstackTag(TAG)
+                            .fragment(PhotoDetailFragment.newInstance(
+                                item.photo.id,
+                                item.photo.url_l
+                            ))
+                            .transitionPreset(Navigator.TRANSITION_PRESET_SLIDE_OVER)
+                            .navigate()
                     }
                 }
             }
