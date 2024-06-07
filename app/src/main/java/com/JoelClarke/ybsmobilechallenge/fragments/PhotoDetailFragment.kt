@@ -85,6 +85,7 @@ class PhotoDetailFragment : Fragment() {
 
         adapter = TagsAdapter()
         layoutManager = GridLayoutManager(requireContext(), spanCount)
+        //Span sizes to try and fit many tags in a line if possible
         layoutManager.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
             override fun getSpanSize(position: Int): Int {
                 var tagLength = detailsViewModel.tags[position].content.length
@@ -122,6 +123,7 @@ class PhotoDetailFragment : Fragment() {
     override fun onStart() {
         super.onStart()
 
+        //add the network listener to look out for responses
         networkingListener = object : NetworkManager.NetworkRequestListener<Any>() {
             override fun onComplete(request: NetworkManager.NetworkRequest<Any>) {
                 when(request.tag) {
@@ -139,6 +141,7 @@ class PhotoDetailFragment : Fragment() {
             NET_GET_INFO
         ), networkingListener!!)
 
+        //process old responses that haven't been processed yet
         val lastPhotosResponse = NetworkManager.getInstance()?.getLatest(NET_GET_INFO)
         if (lastPhotosResponse != null) {
             detailsViewModel.photoDetailResponse.value = lastPhotosResponse.response as PhotoDetailsResponse?
@@ -149,6 +152,7 @@ class PhotoDetailFragment : Fragment() {
     override fun onStop() {
         super.onStop()
 
+        //remove the network listener
         networkingListener?.let {
             NetworkManager.getInstance()?.removeListener(
                 arrayOf(
@@ -157,6 +161,10 @@ class PhotoDetailFragment : Fragment() {
             )
         }
     }
+
+    /**
+     * Server response and updating the UI
+     */
 
     fun setupObservers() {
         detailsViewModel.networkInFlight.removeObservers(viewLifecycleOwner)
@@ -202,6 +210,12 @@ class PhotoDetailFragment : Fragment() {
 
     }
 
+    /**
+     * Network request section
+     *
+     * Where all the API calls for this fragment are made by calling the Networking class
+     */
+
     fun getPhotoDetails() {
         if (detailsViewModel.networkInFlight.value == true) return
         detailsViewModel.networkInFlight.postValue(true)
@@ -217,6 +231,12 @@ class PhotoDetailFragment : Fragment() {
                     }
                 }))
     }
+
+    /**
+     * the following section is all to do with the recyclerview implementation.
+     * All of the views should be contained in the ListUtil.
+     * This section should contain the specific details for this fragment
+     */
 
     inner class TagsAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
@@ -244,6 +264,10 @@ class PhotoDetailFragment : Fragment() {
         }
 
     }
+
+    /**
+     * ViewModel for this fragment
+     */
 
     class PhotoDetailViewModel : ViewModel() {
         var photoId : String? = null

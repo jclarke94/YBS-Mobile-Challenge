@@ -82,6 +82,7 @@ class UserPhotosFragment : Fragment() {
             (activity as MainActivity).onBackPressed()
         }
 
+        //Span size changes dependant on if the image is landscape or portrait
         adapter = PhotosAdapter()
         layoutManager = GridLayoutManager(requireContext(), spanCount)
         layoutManager.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
@@ -91,7 +92,6 @@ class UserPhotosFragment : Fragment() {
                     ListUtil.TYPE_USER_PHOTO_PORTRAIT -> {
                         1
                     }
-
                     else -> {
                         spanCount
                     }
@@ -112,6 +112,7 @@ class UserPhotosFragment : Fragment() {
     override fun onStart() {
         super.onStart()
 
+        //add the network listener to look out for responses
         networkingListener = object : NetworkManager.NetworkRequestListener<Any>() {
             override fun onComplete(request: NetworkManager.NetworkRequest<Any>) {
                 when(request.tag) {
@@ -133,6 +134,7 @@ class UserPhotosFragment : Fragment() {
             NET_USER_PHOTOS
         ), networkingListener!!)
 
+        //process old responses that haven't been processed yet
         val lastPhotosResponse = NetworkManager.getInstance()?.getLatest(NET_USER_PHOTOS)
         if (lastPhotosResponse != null) {
             userViewModel.userPhotosResponse.value = lastPhotosResponse.response as PhotosResponse?
@@ -149,6 +151,7 @@ class UserPhotosFragment : Fragment() {
     override fun onStop() {
         super.onStop()
 
+        //remove the network listener
         networkingListener?.let {
             NetworkManager.getInstance()?.removeListener(
                 arrayOf(
@@ -158,6 +161,10 @@ class UserPhotosFragment : Fragment() {
             )
         }
     }
+
+    /**
+     * Server response and updating the UI
+     */
 
     fun setupObservers() {
         userViewModel.networkInFlight.removeObservers(viewLifecycleOwner)
@@ -267,6 +274,12 @@ class UserPhotosFragment : Fragment() {
         }
     }
 
+    /**
+     * Network request section
+     *
+     * Where all the API calls for this fragment are made by calling the Networking class
+     */
+
     private fun getUserInfo() {
         if (userViewModel.networkInFlight.value == true) return
         userViewModel.networkInFlight.postValue(true)
@@ -302,6 +315,12 @@ class UserPhotosFragment : Fragment() {
                     }
                 }))
     }
+
+    /**
+     * the following section is all to do with the recyclerview implementation.
+     * All of the views should be contained in the ListUtil.
+     * This section should contain the specific details for this fragment
+     */
 
     inner class PhotosAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
@@ -375,6 +394,10 @@ class UserPhotosFragment : Fragment() {
         }
 
     }
+
+    /**
+     * ViewModel for this fragment
+     */
 
     class UserViewModel : ViewModel() {
         var userId : String? = null

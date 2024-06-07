@@ -67,13 +67,15 @@ class HomeFragment: Fragment() {
         bindings.rvItems.adapter = adapter
         bindings.rvItems.layoutManager = layoutManager
 
+
+        bindings.etSearch.imeOptions = EditorInfo.IME_ACTION_SEARCH
         bindings.etSearch.setOnEditorActionListener(object : OnEditorActionListener {
             override fun onEditorAction(p0: TextView?, actionId: Int, event: KeyEvent?): Boolean {
                 if (actionId == EditorInfo.IME_ACTION_SEARCH
                     || actionId == EditorInfo.IME_ACTION_DONE
                     || event?.getAction() == KeyEvent.ACTION_DOWN
                     && event?.getKeyCode() == KeyEvent.KEYCODE_ENTER) {
-                    (activity as MainActivity).hideKeyboard()
+
                     performSearch()
                     return true
                 }
@@ -81,11 +83,8 @@ class HomeFragment: Fragment() {
             }
 
         })
-
-        bindings.etSearch.imeOptions = EditorInfo.IME_ACTION_SEARCH
-
+        
         bindings.ibShowSearch.setOnClickListener {
-            (activity as MainActivity).hideKeyboard()
             performSearch()
         }
 
@@ -94,7 +93,7 @@ class HomeFragment: Fragment() {
         if (homeViewModel.firstRun) {
             homeViewModel.firstRun = false
             bindings.etSearch.setText("Yorkshire")
-            performSearch()
+            performSearch() //moved into first run otherwise it searches when returning from other fragment
         }
 
 //        performSearch()
@@ -152,15 +151,9 @@ class HomeFragment: Fragment() {
         }
     }
 
-    private fun performSearch() {
-        var search = bindings.etSearch.text
-        if (search.isNullOrEmpty()) {
-            getPhotos()
-        } else {
-            getSearch(search.toString())
-        }
-
-    }
+    /**
+     * Server response and updating the UI
+     */
 
     private fun setupObservers() {
         homeViewModel.networkInFlight.removeObservers(viewLifecycleOwner)
@@ -214,6 +207,23 @@ class HomeFragment: Fragment() {
 
     }
 
+    /**
+     * Network request section
+     *
+     * Where all the API calls for this fragment are made by calling the Networking class
+     */
+
+    private fun performSearch() {
+        (activity as MainActivity).hideKeyboard()
+        var search = bindings.etSearch.text
+        if (search.isNullOrEmpty()) {
+            getPhotos()
+        } else {
+            getSearch(search.toString())
+        }
+
+    }
+
     private fun getPhotos() {
         Log.d(TAG, "getPhotos")
         if (homeViewModel.networkInFlight.value == true) return
@@ -246,6 +256,12 @@ class HomeFragment: Fragment() {
                     }
                 }))
     }
+
+    /**
+     * the following section is all to do with the recyclerview implementation.
+     * All of the views should be contained in the ListUtil.
+     * This section should contain the specific details for this fragment
+     */
 
     inner class PhotoListAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
@@ -343,6 +359,10 @@ class HomeFragment: Fragment() {
             }
         }
     }
+
+    /**
+     * ViewModel for this fragment
+     */
 
     class HomeViewModel : ViewModel() {
         val items = mutableListOf<ListItem>()
