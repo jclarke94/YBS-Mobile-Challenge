@@ -1,165 +1,171 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/tbToolbar"
+        app:layout_constraintTop_toTopOf="parent"
+        android:background="@color/black"
+        android:minHeight="@dimen/toolbar_height"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content">
 
-
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/tbToolbar"
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tvTbTitle"
+            android:text="@string/app_name"
+            android:textSize="@dimen/text_title"
+            android:textStyle="bold"
+            android:textColor="@color/white"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            android:background="@color/black"
-            android:minHeight="@dimen/toolbar_height"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+        <androidx.appcompat.widget.AppCompatImageButton
+            android:id="@+id/ibBack"
+            android:background="?attr/selectableItemBackground"
+            android:src="@drawable/ic_back"
+            android:layout_marginStart="@dimen/padding_large"
+            android:layout_marginVertical="@dimen/padding_small"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_width="@dimen/min_touch_area"
+            android:layout_height="@dimen/min_touch_area"/>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.core.widget.NestedScrollView
+        app:layout_constraintTop_toBottomOf="@id/tbToolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="match_parent">
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/ivImage"
+                android:layout_margin="@dimen/padding_xxlarge"
+                app:layout_constraintTop_toTopOf="parent"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
 
             <androidx.appcompat.widget.AppCompatTextView
-                android:id="@+id/tvTbTitle"
-                android:text="@string/app_name"
-                android:textSize="@dimen/text_title"
+                android:id="@+id/tvTitle"
                 android:textStyle="bold"
-                android:textColor="@color/white"
-                app:layout_constraintEnd_toEndOf="parent"
+                android:textSize="@dimen/text_title"
+                android:layout_marginVertical="@dimen/padding_medium"
+                android:layout_marginHorizontal="@dimen/padding_large"
+                app:layout_constraintTop_toBottomOf="@id/ivImage"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"/>
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tvDescriptionTitle"
+                android:textStyle="bold"
+                android:textSize="@dimen/text_subheading"
+                android:text="@string/photo_description"
+                android:layout_marginVertical="@dimen/padding_medium"
+                android:layout_marginHorizontal="@dimen/padding_large"
+                app:layout_constraintTop_toBottomOf="@id/tvTitle"
+                app:layout_constraintStart_toStartOf="parent"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"/>
 
-            <androidx.appcompat.widget.AppCompatImageButton
-                android:id="@+id/ibBack"
-                android:background="?attr/selectableItemBackground"
-                android:src="@drawable/ic_back"
-                android:layout_marginStart="@dimen/padding_large"
-                android:layout_marginVertical="@dimen/padding_small"
-                app:layout_constraintBottom_toBottomOf="parent"
+            <View
+                android:background="@color/black"
+                app:layout_constraintTop_toBottomOf="@id/tvDescriptionTitle"
+                app:layout_constraintStart_toStartOf="@id/tvDescriptionTitle"
+                app:layout_constraintEnd_toEndOf="@id/tvDescriptionTitle"
+                android:layout_width="0dp"
+                android:layout_height="1dp"/>
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tvDescription"
+                android:layout_marginVertical="@dimen/padding_medium"
+                android:layout_marginHorizontal="@dimen/padding_large"
+                app:layout_constraintTop_toBottomOf="@id/tvDescriptionTitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tvDateTitle"
+                android:textStyle="bold"
+                android:textSize="@dimen/text_subheading"
+                android:text="@string/photo_date_taken"
+                android:layout_marginVertical="@dimen/padding_medium"
+                android:layout_marginHorizontal="@dimen/padding_large"
+                app:layout_constraintTop_toBottomOf="@id/tvDescription"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                android:layout_width="@dimen/min_touch_area"
-                android:layout_height="@dimen/min_touch_area"/>
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+            <View
+                android:background="@color/black"
+                app:layout_constraintTop_toBottomOf="@id/tvDateTitle"
+                app:layout_constraintStart_toStartOf="@id/tvDateTitle"
+                app:layout_constraintEnd_toEndOf="@id/tvDateTitle"
+                android:layout_width="0dp"
+                android:layout_height="1dp"/>
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tvDate"
+                android:layout_marginVertical="@dimen/padding_medium"
+                android:layout_marginHorizontal="@dimen/padding_large"
+                app:layout_constraintTop_toBottomOf="@id/tvDateTitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tvTagsTitle"
+                android:textStyle="bold"
+                android:textSize="@dimen/text_subheading"
+                android:text="@string/photo_tags"
+                android:layout_marginVertical="@dimen/padding_medium"
+                android:layout_marginHorizontal="@dimen/padding_large"
+                app:layout_constraintTop_toBottomOf="@id/tvDate"
+                app:layout_constraintStart_toStartOf="parent"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+            <View
+                android:background="@color/black"
+                app:layout_constraintTop_toBottomOf="@id/tvTagsTitle"
+                app:layout_constraintStart_toStartOf="@id/tvTagsTitle"
+                app:layout_constraintEnd_toEndOf="@id/tvTagsTitle"
+                android:layout_width="0dp"
+                android:layout_height="1dp"/>
+
+            <!--    <androidx.appcompat.widget.AppCompatTextView-->
+            <!--        android:id="@+id/tvTags"-->
+            <!--        android:layout_marginVertical="@dimen/padding_medium"-->
+            <!--        android:layout_marginHorizontal="@dimen/padding_large"-->
+            <!--        app:layout_constraintTop_toBottomOf="@id/tvTagsTitle"-->
+            <!--        android:layout_width="match_parent"-->
+            <!--        android:layout_height="wrap_content"/>-->
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rvTags"
+                android:layout_marginVertical="@dimen/padding_medium"
+                android:layout_marginHorizontal="@dimen/padding_large"
+                app:layout_constraintTop_toBottomOf="@id/tvTagsTitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
+            <View
+                app:layout_constraintTop_toBottomOf="@id/rvTags"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/xlrg_touch_area"/>
+
+
+
         </androidx.constraintlayout.widget.ConstraintLayout>
-
-        <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/ivImage"
-            android:layout_margin="@dimen/padding_xxlarge"
-            app:layout_constraintTop_toBottomOf="@id/tbToolbar"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
-
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/tvTitle"
-            android:textStyle="bold"
-            android:textSize="@dimen/text_title"
-            android:layout_marginVertical="@dimen/padding_medium"
-            android:layout_marginHorizontal="@dimen/padding_large"
-            app:layout_constraintTop_toBottomOf="@id/ivImage"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"/>
-
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/tvDescriptionTitle"
-            android:textStyle="bold"
-            android:textSize="@dimen/text_subheading"
-            android:text="@string/photo_description"
-            android:layout_marginVertical="@dimen/padding_medium"
-            android:layout_marginHorizontal="@dimen/padding_large"
-            app:layout_constraintTop_toBottomOf="@id/tvTitle"
-            app:layout_constraintStart_toStartOf="parent"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
-
-        <View
-            android:background="@color/black"
-            app:layout_constraintTop_toBottomOf="@id/tvDescriptionTitle"
-            app:layout_constraintStart_toStartOf="@id/tvDescriptionTitle"
-            app:layout_constraintEnd_toEndOf="@id/tvDescriptionTitle"
-            android:layout_width="0dp"
-            android:layout_height="1dp"/>
-
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/tvDescription"
-            android:layout_marginVertical="@dimen/padding_medium"
-            android:layout_marginHorizontal="@dimen/padding_large"
-            app:layout_constraintTop_toBottomOf="@id/tvDescriptionTitle"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
-
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/tvDateTitle"
-            android:textStyle="bold"
-            android:textSize="@dimen/text_subheading"
-            android:text="@string/photo_date_taken"
-            android:layout_marginVertical="@dimen/padding_medium"
-            android:layout_marginHorizontal="@dimen/padding_large"
-            app:layout_constraintTop_toBottomOf="@id/tvDescription"
-            app:layout_constraintStart_toStartOf="parent"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
-
-        <View
-            android:background="@color/black"
-            app:layout_constraintTop_toBottomOf="@id/tvDateTitle"
-            app:layout_constraintStart_toStartOf="@id/tvDateTitle"
-            app:layout_constraintEnd_toEndOf="@id/tvDateTitle"
-            android:layout_width="0dp"
-            android:layout_height="1dp"/>
-
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/tvDate"
-            android:layout_marginVertical="@dimen/padding_medium"
-            android:layout_marginHorizontal="@dimen/padding_large"
-            app:layout_constraintTop_toBottomOf="@id/tvDateTitle"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
-
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/tvTagsTitle"
-            android:textStyle="bold"
-            android:textSize="@dimen/text_subheading"
-            android:text="@string/photo_tags"
-            android:layout_marginVertical="@dimen/padding_medium"
-            android:layout_marginHorizontal="@dimen/padding_large"
-            app:layout_constraintTop_toBottomOf="@id/tvDate"
-            app:layout_constraintStart_toStartOf="parent"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
-
-        <View
-            android:background="@color/black"
-            app:layout_constraintTop_toBottomOf="@id/tvTagsTitle"
-            app:layout_constraintStart_toStartOf="@id/tvTagsTitle"
-            app:layout_constraintEnd_toEndOf="@id/tvTagsTitle"
-            android:layout_width="0dp"
-            android:layout_height="1dp"/>
-
-    <!--    <androidx.appcompat.widget.AppCompatTextView-->
-    <!--        android:id="@+id/tvTags"-->
-    <!--        android:layout_marginVertical="@dimen/padding_medium"-->
-    <!--        android:layout_marginHorizontal="@dimen/padding_large"-->
-    <!--        app:layout_constraintTop_toBottomOf="@id/tvTagsTitle"-->
-    <!--        android:layout_width="match_parent"-->
-    <!--        android:layout_height="wrap_content"/>-->
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rvTags"
-            android:layout_marginVertical="@dimen/padding_medium"
-            android:layout_marginHorizontal="@dimen/padding_large"
-            app:layout_constraintTop_toBottomOf="@id/tvTagsTitle"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
-
-        <View
-            app:layout_constraintTop_toBottomOf="@id/rvTags"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/xlrg_touch_area"/>
+    </androidx.core.widget.NestedScrollView>
 
 
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
-</androidx.core.widget.NestedScrollView>
+</androidx.constraintlayout.widget.ConstraintLayout>

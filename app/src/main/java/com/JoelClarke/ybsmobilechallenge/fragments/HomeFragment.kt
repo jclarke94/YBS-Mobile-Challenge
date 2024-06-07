@@ -6,6 +6,7 @@ import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.RoundedCorner
 import android.view.View
+import android.view.View.OnClickListener
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.widget.TextView
@@ -48,7 +49,7 @@ class HomeFragment: Fragment() {
     private val homeViewModel : HomeViewModel by viewModels()
 
     private lateinit var bindings : FragmentHomeBinding
-    private lateinit var layoutManager: LayoutManager
+    private lateinit var layoutManager: LinearLayoutManager
     private lateinit var adapter : PhotoListAdapter
 
     override fun onCreateView(
@@ -322,6 +323,22 @@ class HomeFragment: Fragment() {
                             .transitionPreset(Navigator.TRANSITION_PRESET_SLIDE_OVER)
                             .navigate()
                     }
+
+                    var profileClick = object : OnClickListener {
+                        override fun onClick(p0: View?) {
+                            Navigator.with((activity as MainActivity))
+                                .backstackTag(TAG)
+                                .fragment(UserPhotosFragment.newInstance(
+                                    item.photo.owner
+                                ))
+                                .transitionPreset(Navigator.TRANSITION_PRESET_SLIDE_OVER)
+                                .navigate()
+                        }
+
+                    }
+
+                    pHolder.binding.ivUserIcon.setOnClickListener(profileClick)
+                    pHolder.binding.tvUserId.setOnClickListener(profileClick)
                 }
             }
         }

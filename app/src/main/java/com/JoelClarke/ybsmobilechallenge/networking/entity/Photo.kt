@@ -12,6 +12,8 @@ class Photo(
     @SerializedName("farm")
     val iconFarm : Int?,
     @SerializedName("server")
-    val iconServer : String?
+    val iconServer : String?,
+    val height_l : Int?,
+    val width_l : Int?
 ) {
 }

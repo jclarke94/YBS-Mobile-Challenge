@@ -10,6 +10,7 @@ import com.JoelClarke.ybsmobilechallenge.BuildConfig
 import com.JoelClarke.ybsmobilechallenge.networking.responses.BaseResponse
 import com.JoelClarke.ybsmobilechallenge.networking.responses.PhotoDetailsResponse
 import com.JoelClarke.ybsmobilechallenge.networking.responses.PhotosResponse
+import com.JoelClarke.ybsmobilechallenge.networking.responses.UserProfileResponse
 import com.JoelClarke.ybsmobilechallenge.util.ACTION_STATUS_CODE
 import com.JoelClarke.ybsmobilechallenge.util.EndpointsUtil
 import com.google.gson.Gson
@@ -135,6 +136,48 @@ class Networking(private val context : Context) {
             .build()
 
         return performBasicNetworking(uri.toString(), null, PhotoDetailsResponse::class)
+    }
+
+    fun fetchUserPhotos(
+        userId : String
+    ) : PhotosResponse? {
+        Log.d("NETWORKING", "fetch user photos")
+
+        var uri = Uri.Builder()
+            .scheme("https")
+            .authority(BASE_URL)
+            .appendPath("services")
+            .appendPath("rest/")
+            .appendQueryParameter("method", EndpointsUtil.GET_SEARCH)
+            .appendQueryParameter("api_key", BuildConfig.API_KEY)
+            .appendQueryParameter("user_id", userId)
+            .appendQueryParameter("safe_search", "1")
+            .appendQueryParameter("extras", "url_l,owner_name,tags,icon_server,description")
+            .appendQueryParameter("format", "json")
+            .appendQueryParameter("nojsoncallback", "1")
+            .build()
+
+
+        return performBasicNetworking(uri.toString(), null, PhotosResponse::class)
+    }
+
+    fun fetchUserInfo(
+        userId : String
+    ) : UserProfileResponse? {
+        var uri = Uri.Builder()
+            .scheme("https")
+            .authority(BASE_URL)
+            .appendPath("services")
+            .appendPath("rest/")
+            .appendQueryParameter("method", EndpointsUtil.GET_PROFILE)
+            .appendQueryParameter("api_key", BuildConfig.API_KEY)
+            .appendQueryParameter("user_id", userId)
+            .appendQueryParameter("format", "json")
+            .appendQueryParameter("nojsoncallback", "1")
+            .build()
+
+
+        return performBasicNetworking(uri.toString(), null, UserProfileResponse::class)
     }
 
     // ------------------------------

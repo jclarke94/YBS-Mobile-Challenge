@@ -15,5 +15,7 @@
     <string name="photo_tags">Tags</string>
     <string name="photo_owner_name">Owner Name</string>
 
+<!--    user profile-->
+    <string name="user_joined">Joined: %1$s</string>
 
 </resources>

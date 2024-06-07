@@ -11,6 +11,7 @@ import com.JoelClarke.ybsmobilechallenge.databinding.ListitemPhotoItemBinding
 import com.JoelClarke.ybsmobilechallenge.databinding.ListitemSpacerBinding
 import com.JoelClarke.ybsmobilechallenge.databinding.ListitemTagBinding
 import com.JoelClarke.ybsmobilechallenge.databinding.ListitemUserPhotoBinding
+import com.JoelClarke.ybsmobilechallenge.databinding.ListitemUserPortraitPhotoBinding
 import com.JoelClarke.ybsmobilechallenge.networking.entity.Photo
 import com.JoelClarke.ybsmobilechallenge.networking.entity.PhotoTag
 
@@ -27,6 +28,7 @@ class ListUtil {
         const val TYPE_PHOTO = 996
         const val TYPE_TAG = 995
         const val TYPE_USER_PHOTO = 994
+        const val TYPE_USER_PHOTO_PORTRAIT = 993
 
         fun createSpacerViewHolder(
             inflater : LayoutInflater,
@@ -75,6 +77,14 @@ class ListUtil {
             val v = inflater.inflate(R.layout.listitem_user_photo, parent, false)
             return UserPhotoViewHolder(v)
         }
+
+        fun createUserPhotoPortraitViewHolder(
+            inflater: LayoutInflater,
+            parent: ViewGroup
+        ) : UserPhotoPortraitViewHolder {
+            val v = inflater.inflate(R.layout.listitem_user_portrait_photo, parent, false)
+            return UserPhotoPortraitViewHolder(v)
+        }
     }
 
     /**
@@ -108,7 +118,7 @@ class ListUtil {
     }
 
     class TagItem(
-        tag : PhotoTag.PhotoTagDetails
+        var tag : PhotoTag.PhotoTagDetails
     ) : ListItem {
         override fun getListItemType(): Int {
             return TYPE_TAG
@@ -116,10 +126,18 @@ class ListUtil {
     }
 
     class UserPhotoItem(
-        url : String
+        var photo : Photo
     ) : ListItem {
         override fun getListItemType(): Int {
             return TYPE_USER_PHOTO
+        }
+    }
+
+    class UserPhotoPortraitItem(
+        var photo : Photo
+    ) : ListItem {
+        override fun getListItemType(): Int {
+            return TYPE_USER_PHOTO_PORTRAIT
         }
     }
 
@@ -150,5 +168,9 @@ class ListUtil {
 
     class UserPhotoViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val binding = ListitemUserPhotoBinding.bind(itemView)
+    }
+
+    class UserPhotoPortraitViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        val binding = ListitemUserPortraitPhotoBinding.bind(itemView)
     }
 }
